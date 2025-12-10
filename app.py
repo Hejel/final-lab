@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 st.title("Visualisasi Data - Final Lab Machine Learning")
 st.write("Menampilkan eksplorasi dataset mobile price classification.")
 
+# =============================
 # Load data
+# =============================
 @st.cache_data
 def load_data():
     return pd.read_csv("train.csv")
@@ -17,16 +19,16 @@ st.subheader("Preview Dataset")
 st.dataframe(train.head())
 
 # =============================
-# VISUALISASI 1 — Countplot
+# VISUALISASI 1 — Countplot price_range
 # =============================
 st.subheader("Distribusi price_range")
 fig1, ax1 = plt.subplots()
 sns.countplot(x="price_range", data=train, ax=ax1)
-ax1.set_title("Jumlah Sample per Kelas Harga")
+ax1.set_title("Jumlah sample per kelas harga (0–3)")
 st.pyplot(fig1)
 
 # =============================
-# VISUALISASI 2 — Histogram RAM
+# VISUALISASI 2 — Histogram RAM + KDE
 # =============================
 st.subheader("Distribusi RAM")
 fig2, ax2 = plt.subplots()
@@ -40,16 +42,16 @@ st.pyplot(fig2)
 st.subheader("RAM berdasarkan price_range")
 fig3, ax3 = plt.subplots()
 sns.boxplot(x="price_range", y="ram", data=train, ax=ax3)
-ax3.set_title("RAM by price_range")
+ax3.set_title("RAM per kelas harga")
 st.pyplot(fig3)
 
 # =============================
-# VISUALISASI 4 — Barplot Battery Power
+# VISUALISASI 4 — Barplot battery_power per kelas
 # =============================
-st.subheader("Rata-rata Battery Power per Kelas Harga")
+st.subheader("Rata-rata battery_power per kelas harga")
 fig4, ax4 = plt.subplots()
 sns.barplot(x="price_range", y="battery_power", data=train, ax=ax4)
-ax4.set_title("Rata-rata Battery Power")
+ax4.set_title("Rata-rata battery_power per kelas harga")
 st.pyplot(fig4)
 
-st.write("Visualisasi selesai ✔")
+st.write("Semua visualisasi selesai ✔")
