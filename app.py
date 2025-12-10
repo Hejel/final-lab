@@ -16,6 +16,7 @@ def load_data():
 
 @st.cache_resource
 def train_model(df: pd.DataFrame):
+    # X = fitur, y = target
     X = df.drop("price_range", axis=1)
     y = df["price_range"]
 
@@ -26,8 +27,21 @@ def train_model(df: pd.DataFrame):
 train = load_data()
 model, feature_names = train_model(train)
 
-st.subheader("Contoh Data")
-st.dataframe(train.head())
+# ========================
+# Contoh data per kategori harga (gabungan)
+# ========================
+st.subheader("Contoh Data Berdasarkan Kategori Harga")
+
+contoh = pd.concat([
+    train[train["price_range"] == 0].head(1),
+    train[train["price_range"] == 1].head(1),
+    train[train["price_range"] == 2].head(1),
+    train[train["price_range"] == 3].head(1)
+], axis=0)
+
+contoh.index = ["Murah (0)", "Menengah (1)", "Menengah Atas (2)", "Mahal (3)"]
+
+st.dataframe(contoh)
 
 # ========================
 # 2. Input user
@@ -55,12 +69,15 @@ three_g = st.selectbox("3G Support", [0, 1])
 touch_screen = st.selectbox("Touch Screen", [0, 1])
 wifi = st.selectbox("WiFi", [0, 1])
 
-# urutan fitur harus sama dengan kolom X
+# Urutan fitur harus sama dengan kolom X saat training
 input_data = np.array([[battery_power, blue, clock_speed, dual_sim, fc, four_g,
                         int_memory, m_dep, mobile_wt, n_cores, pc, px_height,
                         px_width, ram, sc_h, sc_w, talk_time, three_g,
                         touch_screen, wifi]])
 
+# ========================
+# 3. Prediksi
+# ========================
 if st.button("Prediksi Harga"):
     pred = model.predict(input_data)[0]
     label = ["Murah (0)", "Menengah (1)", "Menengah Atas (2)", "Mahal (3)"]
