@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
 st.title("Prediksi Harga Ponsel - Final Lab Machine Learning")
-st.write("Model Decision Tree dilatih langsung dari dataset train.csv (Kaggle).")
+st.write("Model Decision Tree dilatih menggunakan dataset train.csv dari Kaggle.")
 
 # ========================
 # 1. Load data & train model
@@ -16,7 +16,6 @@ def load_data():
 
 @st.cache_resource
 def train_model(df: pd.DataFrame):
-    # X = fitur, y = target
     X = df.drop("price_range", axis=1)
     y = df["price_range"]
 
@@ -28,7 +27,7 @@ train = load_data()
 model, feature_names = train_model(train)
 
 # ========================
-# Contoh data per kategori harga (gabungan)
+# Contoh data gabungan (untuk ditampilkan)
 # ========================
 st.subheader("Contoh Data Berdasarkan Kategori Harga")
 
@@ -40,11 +39,10 @@ contoh = pd.concat([
 ], axis=0)
 
 contoh.index = ["Murah (0)", "Menengah (1)", "Menengah Atas (2)", "Mahal (3)"]
-
 st.dataframe(contoh)
 
 # ========================
-# 2. Input user
+# FEATURE INPUT
 # ========================
 st.header("Masukkan Spesifikasi Ponsel")
 
@@ -69,16 +67,43 @@ three_g = st.selectbox("3G Support", [0, 1])
 touch_screen = st.selectbox("Touch Screen", [0, 1])
 wifi = st.selectbox("WiFi", [0, 1])
 
-# Urutan fitur harus sama dengan kolom X saat training
+# urutan fitur sama seperti training
 input_data = np.array([[battery_power, blue, clock_speed, dual_sim, fc, four_g,
                         int_memory, m_dep, mobile_wt, n_cores, pc, px_height,
                         px_width, ram, sc_h, sc_w, talk_time, three_g,
                         touch_screen, wifi]])
 
 # ========================
-# 3. Prediksi
+# 3. Prediksi manual input
 # ========================
 if st.button("Prediksi Harga"):
     pred = model.predict(input_data)[0]
     label = ["Murah (0)", "Menengah (1)", "Menengah Atas (2)", "Mahal (3)"]
     st.success(f"Hasil Prediksi: **{label[pred]}**")
+
+# ========================
+# 4. TOMBOL CONTOH OTOMATIS
+# ========================
+st.header("Contoh Otomatis Sesuai Kategori Harga")
+
+def predict_and_show(df_row):
+    st.write(df_row)
+    pred = model.predict(df_row.values.reshape(1, -1))[0]
+    label = ["Murah (0)", "Menengah (1)", "Menengah Atas (2)", "Mahal (3)"]
+    st.success(f"Hasil Prediksi: **{label[pred]}**")
+
+if st.button("Contoh Ponsel Murah (0)"):
+    df_row = train[train["price_range"] == 0].head(1)
+    predict_and_show(df_row)
+
+if st.button("Contoh Ponsel Menengah (1)"):
+    df_row = train[train["price_range"] == 1].head(1)
+    predict_and_show(df_row)
+
+if st.button("Contoh Ponsel Menengah Atas (2)"):
+    df_row = train[train["price_range"] == 2].head(1)
+    predict_and_show(df_row)
+
+if st.button("Contoh Ponsel Mahal (3)"):
+    df_row = train[train["price_range"] == 3].head(1)
+    predict_and_show(df_row)
